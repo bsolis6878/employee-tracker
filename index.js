@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const db = require('./db/connection');
+const { allDepartments, allRoles } = require('./utils/queries');
 
 const optionsSelect = () => {
     return inquirer.prompt([
@@ -12,7 +12,10 @@ const optionsSelect = () => {
     ])
     .then((answer) => {
         if (answer.question === 'View all departments') {
-            console.log('Test');
+            allDepartments()
+        }
+        if (answer.question === 'View all roles') {
+            return allRoles();
         }
         if (answer.question === 'Quit') {
             console.log('Thanks for dropping by!');
