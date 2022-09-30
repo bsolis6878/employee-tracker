@@ -16,7 +16,11 @@ const allDepartments = () => {
 
 const allRoles = () => {
     db.query(
-        `SELECT * FROM role`,
+        `SELECT role.id, role.title, role.salary, department.name
+        AS department
+        FROM role
+        LEFT JOIN department
+        ON role.department_id = department.id`,
         function(err, results) {
             if (err) {
                 console.log(err);
@@ -29,7 +33,11 @@ const allRoles = () => {
 
 const allEmployees = () => {
     db.query(
-        `SELECT * FROM employee`,
+        `SELECT a.id, a.first_name, a.last_name, role.title, department.name AS department, role.salary, CONCAT(b.first_name, " ", b.last_name) AS manager
+        FROM employee a
+        LEFT JOIN role ON a.role_id = role.id
+        LEFT JOIN department ON role.department_id = department.id
+        LEFT JOIN employee b ON a.manager_id = b.id`,
         function(err, results) {
             if (err) {
                 console.log(err);
