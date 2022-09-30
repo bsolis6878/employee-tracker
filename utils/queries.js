@@ -48,4 +48,13 @@ const allEmployees = () => {
     )
 }
 
-module.exports = { allDepartments, allRoles, allEmployees };
+const addDepartment = (dept) => {
+    db.query(
+        `INSERT INTO department (name)
+        VALUES (?)`,
+        [dept],
+        console.log(`Department "${dept}" added.`)
+    )
+}
+
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment };

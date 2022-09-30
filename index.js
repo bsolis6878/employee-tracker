@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment } = require('./utils/queries');
 
 const optionsSelect = () => {
     return inquirer.prompt([
@@ -19,6 +19,26 @@ const optionsSelect = () => {
         }
         if (answer.question === 'View all employees') {
             allEmployees();
+        }
+        if (answer.question === 'Add a department') {
+            return inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'department',
+                    message: 'What is the name of the department?',
+                    validate: departmentInput => {
+                        if (departmentInput) {
+                            return true;
+                        } else {
+                            console.log('Please enter the name of the department.');
+                            return false;
+                        }
+                    }
+                }
+            ])
+            .then((answer) => {
+                addDepartment(answer.department);
+            });
         }
         if (answer.question === 'Quit') {
             console.log('Thanks for dropping by!');
