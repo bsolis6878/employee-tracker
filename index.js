@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees } = require('./utils/queries');
 
 const optionsSelect = () => {
     return inquirer.prompt([
@@ -12,10 +12,13 @@ const optionsSelect = () => {
     ])
     .then((answer) => {
         if (answer.question === 'View all departments') {
-            allDepartments()
+            allDepartments();
         }
         if (answer.question === 'View all roles') {
-            return allRoles();
+            allRoles();
+        }
+        if (answer.question === 'View all employees') {
+            allEmployees();
         }
         if (answer.question === 'Quit') {
             console.log('Thanks for dropping by!');
