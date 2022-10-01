@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees, addDepartment } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment, addRole } = require('./utils/queries');
+
 
 const optionsSelect = () => {
     return inquirer.prompt([
@@ -38,6 +39,52 @@ const optionsSelect = () => {
             ])
             .then((answer) => {
                 addDepartment(answer.department);
+            });
+        }
+        if (answer.question === 'Add a role') {
+            return inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'role',
+                    message: 'What is the name of the role?',
+                    validate: roleInput => {
+                        if (roleInput) {
+                            return true;
+                        } else {
+                            console.log('Please enter the name of the role.');
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    name: 'salary',
+                    message: 'What is the salary of this role?',
+                    validate: salaryInput => {
+                        if (salaryInput) {
+                            return true;
+                        } else {
+                            console.log('Please enter the salary of the role.');
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    name: 'dept',
+                    message: 'What is the department of this role?',
+                    validate: deptInput => {
+                        if (deptInput) {
+                            return true;
+                        } else {
+                            console.log('Please enter the department of the role.');
+                            return false;
+                        }
+                    }
+                }
+            ])
+            .then((answer) => {
+                addRole(answer.role, answer.salary, answer.dept);
             });
         }
         if (answer.question === 'Quit') {

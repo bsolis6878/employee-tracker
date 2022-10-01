@@ -57,4 +57,13 @@ const addDepartment = (dept) => {
     )
 }
 
-module.exports = { allDepartments, allRoles, allEmployees, addDepartment };
+const addRole = (role, salary, dept) => {
+    db.query(
+        `INSERT INTO role (title, salary, department_id)
+        VALUES (?,?,?)`
+        [role, salary, dept],
+        console.log(`Role "${role}" added.`)
+    )
+}
+
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole };
