@@ -60,10 +60,19 @@ const addDepartment = (dept) => {
 const addRole = (role, salary, dept) => {
     db.query(
         `INSERT INTO role (title, salary, department_id)
-        VALUES (?,?,?)`
+        VALUES (?,?,?)`,
         [role, salary, dept],
         console.log(`Role "${role}" added.`)
     )
 }
 
-module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole };
+const addEmployee = (firstName, lastName, role, manager) => {
+    db.query(
+        `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+        VALUES (?,?,?,?)`,
+        [firstName, lastName, role, manager],
+        console.log(`Employee "${firstName}" added.`)
+    )
+}
+
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee };

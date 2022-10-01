@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees, addDepartment, addRole } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee } = require('./utils/queries');
 
 
 const optionsSelect = () => {
@@ -85,6 +85,65 @@ const optionsSelect = () => {
             ])
             .then((answer) => {
                 addRole(answer.role, answer.salary, answer.dept);
+            });
+        }
+        if (answer.question === 'Add an employee') {
+            return inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'firstName',
+                    message: "What is the employee's first name?",
+                    validate: firstNameInput => {
+                        if (firstNameInput) {
+                            return true;
+                        } else {
+                            console.log("Please enter the employee's first name.");
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    name: 'lastName',
+                    message: "What is the employee's last name?",
+                    validate: lastNameInput => {
+                        if (lastNameInput) {
+                            return true;
+                        } else {
+                            console.log("Please enter the employee's last name.");
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    name: 'role',
+                    message: "What is the employee's role?",
+                    validate: roleInput => {
+                        if (roleInput) {
+                            return true;
+                        } else {
+                            console.log("Please enter the employee's role.");
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    name: 'manager',
+                    message: "Who is the employee's manager?",
+                    validate: managerInput => {
+                        if (managerInput) {
+                            return true;
+                        } else {
+                            console.log("Please enter the employee's manager.");
+                            return false;
+                        }
+                    }
+                }
+            ])
+            .then((answer) => {
+                addEmployee(answer.firstName, answer.lastName, answer.role, answer.manager);
             });
         }
         if (answer.question === 'Quit') {
