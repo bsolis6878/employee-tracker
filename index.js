@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee } = require('./utils/queries');
 
 
 const optionsSelect = () => {
@@ -145,6 +145,39 @@ const optionsSelect = () => {
             .then((answer) => {
                 addEmployee(answer.firstName, answer.lastName, answer.role, answer.manager);
             });
+        }
+        if (answer.question === 'Update an employee role') {
+            return inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'employee',
+                    message: "Which employee would you like to update?",
+                    validate: employeeInput => {
+                        if (employeeInput) {
+                            return true;
+                        } else {
+                            console.log("Please enter the employee you'd like to update.");
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    name: 'newRole',
+                    message: "What will their new role be?",
+                    validate: newRoleInput => {
+                        if (newRoleInput) {
+                            return true;
+                        } else {
+                            console.log("Please enter the employee's new role.");
+                            return false;
+                        }
+                    }
+                }
+            ])
+            .then((answer) => {
+                updateEmployee(answer.employee, answer.newRole)
+            })
         }
         if (answer.question === 'Quit') {
             console.log('Thanks for dropping by!');

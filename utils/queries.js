@@ -75,4 +75,13 @@ const addEmployee = (firstName, lastName, role, manager) => {
     )
 }
 
-module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee };
+const updateEmployee = (employee, newRole) => {
+    db.query(
+        `UPDATE employee SET role_id = ?
+        WHERE id = ?`,
+        [newRole, employee],
+        console.log(`Role for "${employee}" updated.`)
+    )
+}
+
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee };
