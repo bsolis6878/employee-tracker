@@ -14,6 +14,18 @@ const allDepartments = () => {
     )
 }
 
+const getDepartments = () => {
+    return new Promise(function (resolve, reject) {
+        db.query(
+            `SELECT * FROM department`,
+            function(err, results) {
+                const departments = results.map(department => department.name);
+                resolve(departments);
+            }
+        )
+    })
+}
+
 const allRoles = () => {
     db.query(
         `SELECT role.id, role.title, role.salary, department.name
@@ -84,4 +96,4 @@ const updateEmployee = (employee, newRole) => {
     )
 }
 
-module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee };
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments };

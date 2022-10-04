@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments } = require('./utils/queries');
 
 
 const optionsSelect = () => {
@@ -70,17 +70,10 @@ const optionsSelect = () => {
                     }
                 },
                 {
-                    type: 'input',
+                    type: 'list',
                     name: 'dept',
                     message: 'What is the department of this role?',
-                    validate: deptInput => {
-                        if (deptInput) {
-                            return true;
-                        } else {
-                            console.log('Please enter the department of the role.');
-                            return false;
-                        }
-                    }
+                    choices: getDepartments
                 }
             ])
             .then((answer) => {
