@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees } = require('./utils/queries');
 
 
 const optionsSelect = () => {
@@ -61,10 +61,10 @@ const optionsSelect = () => {
                     name: 'salary',
                     message: 'What is the salary of this role?',
                     validate: salaryInput => {
-                        if (salaryInput) {
+                        if (salaryInput && !isNaN(salaryInput)) {
                             return true;
                         } else {
-                            console.log('Please enter the salary of the role.');
+                            console.log('Please enter the salary of the role. (Number only)');
                             return false;
                         }
                     }
@@ -72,7 +72,7 @@ const optionsSelect = () => {
                 {
                     type: 'list',
                     name: 'dept',
-                    message: 'What is the department of this role?',
+                    message: "What is the department of this role? (Sorry this doesn't work)",
                     choices: getDepartments
                 }
             ])
@@ -109,22 +109,15 @@ const optionsSelect = () => {
                     }
                 },
                 {
-                    type: 'input',
+                    type: 'list',
                     name: 'role',
                     message: "What is the employee's role?",
-                    validate: roleInput => {
-                        if (roleInput) {
-                            return true;
-                        } else {
-                            console.log("Please enter the employee's role.");
-                            return false;
-                        }
-                    }
+                    choices: getRoles
                 },
                 {
                     type: 'input',
                     name: 'manager',
-                    message: "Who is the employee's manager?",
+                    message: "Who is the employee's manager? (Sorry this doesn't work)",
                     validate: managerInput => {
                         if (managerInput) {
                             return true;
@@ -142,30 +135,16 @@ const optionsSelect = () => {
         if (answer.question === 'Update an employee role') {
             return inquirer.prompt([
                 {
-                    type: 'input',
+                    type: 'list',
                     name: 'employee',
                     message: "Which employee would you like to update?",
-                    validate: employeeInput => {
-                        if (employeeInput) {
-                            return true;
-                        } else {
-                            console.log("Please enter the employee you'd like to update.");
-                            return false;
-                        }
-                    }
+                    choices: getEmployees
                 },
                 {
-                    type: 'input',
+                    type: 'list',
                     name: 'newRole',
-                    message: "What will their new role be?",
-                    validate: newRoleInput => {
-                        if (newRoleInput) {
-                            return true;
-                        } else {
-                            console.log("Please enter the employee's new role.");
-                            return false;
-                        }
-                    }
+                    message: "What will their new role be? (Sorry this doesn't work)",
+                    choices: getRoles
                 }
             ])
             .then((answer) => {

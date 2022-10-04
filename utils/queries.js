@@ -43,6 +43,18 @@ const allRoles = () => {
     )
 }
 
+const getRoles = () => {
+    return new Promise(function (resolve, reject) {
+        db.query(
+            `SELECT * FROM role`,
+            function(err, results) {
+                const roles = results.map(roles => roles.title);
+                resolve(roles);
+            }
+        )
+    })
+}
+
 const allEmployees = () => {
     db.query(
         `SELECT a.id, a.first_name, a.last_name, role.title, department.name AS department, role.salary, CONCAT(b.first_name, " ", b.last_name) AS manager
@@ -60,6 +72,18 @@ const allEmployees = () => {
     )
 }
 
+const getEmployees = () => {
+    return new Promise(function (resolve, reject) {
+        db.query(
+            `SELECT * FROM employee`,
+            function(err, results) {
+                const employees = results.map(employees => employees.first_name);
+                resolve(employees);
+            }
+        )
+    })
+}
+
 const addDepartment = (dept) => {
     db.query(
         `INSERT INTO department (name)
@@ -74,7 +98,12 @@ const addRole = (role, salary, dept) => {
         `INSERT INTO role (title, salary, department_id)
         VALUES (?,?,?)`,
         [role, salary, dept],
-        console.log(`Role "${role}" added.`)
+        function(err, results) {
+            if (err) {
+                console.log(err);
+            }
+        }
+        // console.log(`Role "${role}" added.`)
     )
 }
 
@@ -83,17 +112,27 @@ const addEmployee = (firstName, lastName, role, manager) => {
         `INSERT INTO employee (first_name, last_name, role_id, manager_id)
         VALUES (?,?,?,?)`,
         [firstName, lastName, role, manager],
-        console.log(`Employee "${firstName}" added.`)
+        function(err, results) {
+            if (err) {
+                console.log(err);
+            }
+        }
+        // console.log(`Employee "${firstName}" added.`)
     )
 }
 
 const updateEmployee = (employee, newRole) => {
     db.query(
         `UPDATE employee SET role_id = ?
-        WHERE id = ?`,
+        WHERE first_name = ?`,
         [newRole, employee],
-        console.log(`Role for "${employee}" updated.`)
+        function(err, results) {
+            if (err) {
+                console.log(err);
+            }
+        }
+        // console.log(`Role for "${employee}" updated.`)
     )
 }
 
-module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments };
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees };
