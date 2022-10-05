@@ -48,6 +48,9 @@ const getRoles = () => {
         db.query(
             `SELECT * FROM role`,
             function(err, results) {
+                if (err) {
+                    console.log(err);
+                }
                 const roles = results.map(roles => roles.title);
                 resolve(roles);
             }
@@ -77,6 +80,9 @@ const getEmployees = () => {
         db.query(
             `SELECT * FROM employee`,
             function(err, results) {
+                if (err) {
+                    console.log(err);
+                }
                 const employees = results.map(employees => employees.first_name);
                 resolve(employees);
             }
@@ -89,22 +95,43 @@ const addDepartment = (dept) => {
         `INSERT INTO department (name)
         VALUES (?)`,
         [dept],
-        console.log(`Department "${dept}" added.`)
-    )
-}
-
-const addRole = (role, salary, dept) => {
-    db.query(
-        `INSERT INTO role (title, salary, department_id)
-        VALUES (?,?,?)`,
-        [role, salary, dept],
         function(err, results) {
             if (err) {
                 console.log(err);
             }
+            console.log(`Department "${dept}" added.`)
         }
-        // console.log(`Role "${role}" added.`)
     )
+}
+
+const addRole = (role, salary, dept) => {
+    let departments;
+    db.query(
+        `SELECT department_id
+        FROM role
+        LEFT JOIN department
+        ON role.department_id = department.id
+        WHERE department.name = ?`,
+        [dept],
+        function(err, results) {
+            if (err) {
+                console.log(err);
+            }
+            departments = results[0].department_id;
+            db.query(
+                `INSERT INTO role (title, salary, department_id)
+                VALUES (?,?,?)`,
+                [role, salary, departments],
+                function(err, results) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(`Role "${role}" added.`)
+                }
+            )
+        }
+    )
+
 }
 
 const addEmployee = (firstName, lastName, role, manager) => {

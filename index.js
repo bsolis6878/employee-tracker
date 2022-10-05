@@ -72,7 +72,7 @@ const optionsSelect = () => {
                 {
                     type: 'list',
                     name: 'dept',
-                    message: "What is the department of this role? (Sorry this doesn't work)",
+                    message: "What is the department of this role?",
                     choices: getDepartments
                 }
             ])
@@ -152,7 +152,7 @@ const optionsSelect = () => {
             })
         }
         if (answer.question === 'Quit') {
-            console.log('Thanks for dropping by!');
+            console.log('Thank you for using the employee tracker!');
             process.exit();
         }
     })
