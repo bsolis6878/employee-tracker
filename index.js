@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees, getManagers } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees, getManagers, deleteDepartment, deleteRole, deleteEmployee } = require('./utils/queries');
 
 
 const optionsSelect = () => {
@@ -8,7 +8,7 @@ const optionsSelect = () => {
             type: 'list',
             name: 'question',
             message: "Welcome to the employee tracker! Select an option below to continue.",
-            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Quit']
+            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Delete a department', 'Delete a role', 'Delete an employee', 'Quit']
         }
     ])
     .then((answer) => {
@@ -141,7 +141,46 @@ const optionsSelect = () => {
                 }
             ])
             .then((answer) => {
-                updateEmployee(answer.employee, answer.newRole)
+                updateEmployee(answer.employee, answer.newRole);
+            })
+        }
+        if (answer.question === 'Delete a department') {
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'department',
+                    message: "Which department would you like to delete?",
+                    choices: getDepartments
+                }
+            ])
+            .then((answer) => {
+                deleteDepartment(answer.department);
+            })
+        }
+        if (answer.question === 'Delete a role') {
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'role',
+                    message: "Which role would you like to delete?",
+                    choices: getRoles
+                }
+            ])
+            .then((answer) => {
+                deleteRole(answer.role);
+            })
+        }
+        if (answer.question === 'Delete an employee') {
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'employee',
+                    message: "Which employee would you like to delete?",
+                    choices: getEmployees
+                }
+            ])
+            .then((answer) => {
+                deleteEmployee(answer.employee);
             })
         }
         if (answer.question === 'Quit') {

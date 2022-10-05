@@ -46,6 +46,21 @@ const addDepartment = (dept) => {
     )
 }
 
+const deleteDepartment = (department) => {
+    db.query(
+        `DELETE FROM department
+        WHERE department.name = ?`,
+        [department],
+        function(err, results) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`${department} deleted successfully.`)
+        }
+    )
+}
+
 const allRoles = () => {
     db.query(
         `SELECT role.id, role.title, role.salary, department.name
@@ -105,6 +120,21 @@ const addRole = (role, salary, dept) => {
                     console.log(`Role "${role}" added.`)
                 }
             )
+        }
+    )
+}
+
+const deleteRole = (role) => {
+    db.query(
+        `DELETE FROM role
+        WHERE role.title = ?`,
+        [role],
+        function(err, results) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`${role} deleted successfully.`)
         }
     )
 }
@@ -215,6 +245,21 @@ const updateEmployee = (employee, newRole) => {
     )
 }
 
+const deleteEmployee = (employee) => {
+    db.query(
+        `DELETE FROM employee
+        WHERE employee.first_name = ?`,
+        [employee],
+        function(err, results) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`${employee} deleted successfully.`)
+        }
+    )
+}
+
 const getManagers = () => {
     return new Promise(function (resolve, reject) {
         db.query(
@@ -233,4 +278,4 @@ const getManagers = () => {
     })
 }
 
-module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees, getManagers };
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees, getManagers, deleteDepartment, deleteRole, deleteEmployee };
