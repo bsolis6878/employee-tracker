@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees } = require('./utils/queries');
+const { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees, getManagers } = require('./utils/queries');
 
 
 const optionsSelect = () => {
@@ -115,17 +115,10 @@ const optionsSelect = () => {
                     choices: getRoles
                 },
                 {
-                    type: 'input',
+                    type: 'list',
                     name: 'manager',
-                    message: "Who is the employee's manager? (Sorry this doesn't work)",
-                    validate: managerInput => {
-                        if (managerInput) {
-                            return true;
-                        } else {
-                            console.log("Please enter the employee's manager.");
-                            return false;
-                        }
-                    }
+                    message: "Who is the employee's manager?",
+                    choices: getManagers
                 }
             ])
             .then((answer) => {

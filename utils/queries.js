@@ -7,6 +7,7 @@ const allDepartments = () => {
         function(err, results) {
             if (err) {
                 console.log(err);
+                return;
             }
             const table = cTable.getTable(results);
             console.log(`\n${table}`);
@@ -19,6 +20,10 @@ const getDepartments = () => {
         db.query(
             `SELECT * FROM department`,
             function(err, results) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
                 const departments = results.map(department => department.name);
                 resolve(departments);
             }
@@ -36,6 +41,7 @@ const allRoles = () => {
         function(err, results) {
             if (err) {
                 console.log(err);
+                return;
             }
             const table = cTable.getTable(results);
             console.log(`\n${table}`);
@@ -50,6 +56,7 @@ const getRoles = () => {
             function(err, results) {
                 if (err) {
                     console.log(err);
+                    return;
                 }
                 const roles = results.map(roles => roles.title);
                 resolve(roles);
@@ -68,6 +75,7 @@ const allEmployees = () => {
         function(err, results) {
             if (err) {
                 console.log(err);
+                return;
             }
             const table = cTable.getTable(results);
             console.log(`\n${table}`);
@@ -82,6 +90,7 @@ const getEmployees = () => {
             function(err, results) {
                 if (err) {
                     console.log(err);
+                    return;
                 }
                 const employees = results.map(employees => employees.first_name);
                 resolve(employees);
@@ -98,6 +107,7 @@ const addDepartment = (dept) => {
         function(err, results) {
             if (err) {
                 console.log(err);
+                return;
             }
             console.log(`Department "${dept}" added.`)
         }
@@ -105,7 +115,6 @@ const addDepartment = (dept) => {
 }
 
 const addRole = (role, salary, dept) => {
-    let departments;
     db.query(
         `SELECT department_id
         FROM role
@@ -116,8 +125,9 @@ const addRole = (role, salary, dept) => {
         function(err, results) {
             if (err) {
                 console.log(err);
+                return;
             }
-            departments = results[0].department_id;
+            let departments = results[0].department_id;
             db.query(
                 `INSERT INTO role (title, salary, department_id)
                 VALUES (?,?,?)`,
@@ -134,18 +144,47 @@ const addRole = (role, salary, dept) => {
 
 }
 
-const addEmployee = (firstName, lastName, role, manager) => {
+const addEmployee = (firstName, lastName, roles, managers) => {
     db.query(
-        `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-        VALUES (?,?,?,?)`,
-        [firstName, lastName, role, manager],
+        `SELECT role.id
+        FROM employee
+        JOIN role
+        ON role_id = role.id
+        WHERE role.title = ?;`,
+        [roles],
         function(err, results) {
             if (err) {
                 console.log(err);
             }
+            let role = results[0].id;
+            db.query(
+                `SELECT a.manager_id
+                FROM employee a, employee b
+                WHERE a.manager_id = b.id
+                AND b.first_name = ?;`,
+                [managers],
+                function(err, results) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    let manager = results[0].manager_id;
+                    db.query(
+                        `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                        VALUES (?,?,?,?)`,
+                        [firstName, lastName, role, manager],
+                        function(err, results) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            console.log(`Employee "${firstName}" added.`)
+                        }
+                    )
+                }
+            )
         }
-        // console.log(`Employee "${firstName}" added.`)
     )
+
 }
 
 const updateEmployee = (employee, newRole) => {
@@ -156,10 +195,29 @@ const updateEmployee = (employee, newRole) => {
         function(err, results) {
             if (err) {
                 console.log(err);
+                return;
             }
         }
         // console.log(`Role for "${employee}" updated.`)
     )
 }
 
-module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees };
+const getManagers = () => {
+    return new Promise(function (resolve, reject) {
+        db.query(
+            `SELECT first_name
+            FROM employee
+            WHERE manager_id IS NULL`,
+            function(err, results) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                const managers = results.map(managers => managers.first_name);
+                resolve(managers);
+            }
+        )
+    })
+}
+
+module.exports = { allDepartments, allRoles, allEmployees, addDepartment, addRole, addEmployee, updateEmployee, getDepartments, getRoles, getEmployees, getManagers };
