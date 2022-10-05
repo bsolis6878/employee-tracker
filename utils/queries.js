@@ -184,21 +184,35 @@ const addEmployee = (firstName, lastName, roles, managers) => {
             )
         }
     )
-
 }
 
 const updateEmployee = (employee, newRole) => {
     db.query(
-        `UPDATE employee SET role_id = ?
-        WHERE first_name = ?`,
-        [newRole, employee],
+        `SELECT role.id
+        FROM employee
+        JOIN role
+        ON role_id = role.id
+        WHERE role.title = ?;`,
+        [newRole],
         function(err, results) {
             if (err) {
                 console.log(err);
                 return;
             }
+            let role = results[0].id;
+            db.query(
+                `UPDATE employee SET role_id = ?
+                WHERE first_name = ?`,
+                [role, employee],
+                function(err, results) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    console.log(`Role for "${employee}" updated.`)
+                }
+            )
         }
-        // console.log(`Role for "${employee}" updated.`)
     )
 }
 
