@@ -31,6 +31,21 @@ const getDepartments = () => {
     })
 }
 
+const addDepartment = (dept) => {
+    db.query(
+        `INSERT INTO department (name)
+        VALUES (?)`,
+        [dept],
+        function(err, results) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`Department "${dept}" added.`)
+        }
+    )
+}
+
 const allRoles = () => {
     db.query(
         `SELECT role.id, role.title, role.salary, department.name
@@ -65,6 +80,35 @@ const getRoles = () => {
     })
 }
 
+const addRole = (role, salary, dept) => {
+    db.query(
+        `SELECT department_id
+        FROM role
+        LEFT JOIN department
+        ON role.department_id = department.id
+        WHERE department.name = ?`,
+        [dept],
+        function(err, results) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            let departments = results[0].department_id;
+            db.query(
+                `INSERT INTO role (title, salary, department_id)
+                VALUES (?,?,?)`,
+                [role, salary, departments],
+                function(err, results) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(`Role "${role}" added.`)
+                }
+            )
+        }
+    )
+}
+
 const allEmployees = () => {
     db.query(
         `SELECT a.id, a.first_name, a.last_name, role.title, department.name AS department, role.salary, CONCAT(b.first_name, " ", b.last_name) AS manager
@@ -97,51 +141,6 @@ const getEmployees = () => {
             }
         )
     })
-}
-
-const addDepartment = (dept) => {
-    db.query(
-        `INSERT INTO department (name)
-        VALUES (?)`,
-        [dept],
-        function(err, results) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            console.log(`Department "${dept}" added.`)
-        }
-    )
-}
-
-const addRole = (role, salary, dept) => {
-    db.query(
-        `SELECT department_id
-        FROM role
-        LEFT JOIN department
-        ON role.department_id = department.id
-        WHERE department.name = ?`,
-        [dept],
-        function(err, results) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            let departments = results[0].department_id;
-            db.query(
-                `INSERT INTO role (title, salary, department_id)
-                VALUES (?,?,?)`,
-                [role, salary, departments],
-                function(err, results) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    console.log(`Role "${role}" added.`)
-                }
-            )
-        }
-    )
-
 }
 
 const addEmployee = (firstName, lastName, roles, managers) => {

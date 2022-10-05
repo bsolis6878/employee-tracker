@@ -136,7 +136,7 @@ const optionsSelect = () => {
                 {
                     type: 'list',
                     name: 'newRole',
-                    message: "What will their new role be? (Sorry this doesn't work)",
+                    message: "What will their new role be?",
                     choices: getRoles
                 }
             ])
